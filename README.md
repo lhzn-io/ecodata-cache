@@ -1,8 +1,8 @@
 # <img src="static/logo.svg" height="36" valign="middle" alt="Logo" /> EcodataCache
 
-[![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 <div align="center">
   <img src="docs/source/_static/ecodata-cache-inventory-screenshot.png" alt="EcodataCache Dashboard" />
@@ -55,7 +55,12 @@ The service exposes HTTP APIs (via FastAPI/Uvicorn) which:
 ```bash
 uv sync
 pre-commit install
+
+# Development (single worker, run from the repository root):
 uv run uvicorn service.ecodata_serve.main:app --port 9598
+
+# Service launcher (supports --host/--port/--workers/--reload):
+uv run python service/run_server.py --host 0.0.0.0 --port 9598 --workers 4
 ```
 
 ## Docker Environment
