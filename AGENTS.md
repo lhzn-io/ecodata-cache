@@ -33,7 +33,12 @@ nudging telemetry to the `coastal-sim` Julia physics engine.
 - **Testing**: Run tests with `uv run pytest tests/unit/` (unit) or
   `uv run pytest tests/integration/` (live API).
 - **Commits**: Conventional commits (`feat:`, `fix:`, `docs:`, `chore:`).
-  No AI attribution footers.
+  Author and committer are always the human contributor (`dfry-lhzn <dfry@lhzn.io>`,
+  from `git config`), so the log shows who was behind each change. No `Co-Authored-By:`
+  trailers or non-human identities: GitHub parses those into the Contributors list,
+  which is reserved for people. Noting the agent harness or model that collaborated
+  is welcome as plain text in the commit body. Verify with `git var GIT_AUTHOR_IDENT`
+  before the first commit in a shell.
 - **Git staging**: Stage files explicitly (`git add <file>`). Never `git add .`.
 - **Never commit without approval**: Present the proposed change set and commit message
   to the user and wait for explicit confirmation before running any `git commit`.
