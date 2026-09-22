@@ -30,8 +30,11 @@ nudging telemetry to the `coastal-sim` Julia physics engine.
 - **Dependency management**: Always use `uv run` - never `pip install` directly.
 - **Linting/formatting**: Run `uv run pre-commit run --files <files>` (ruff + mypy)
   before staging any changes.
-- **Testing**: Run tests with `uv run pytest tests/unit/` (unit) or
-  `uv run pytest tests/integration/` (live API).
+- **Testing**: Run tests with `uv run python -m pytest tests/unit/` (unit) or
+  `uv run python -m pytest tests/integration/` (live API, roughly 10 minutes).
+  Use `python -m pytest` rather than the bare `pytest` entry point: the latter can
+  resolve to a system interpreter outside the venv. `tests/conftest.py` puts
+  `src/` and `service/` on `sys.path`, so no `PYTHONPATH` export is needed.
 - **Commits**: Conventional commits (`feat:`, `fix:`, `docs:`, `chore:`).
   Author and committer are always the human contributor (`dfry-lhzn <dfry@lhzn.io>`,
   from `git config`), so the log shows who was behind each change. No `Co-Authored-By:`
@@ -52,7 +55,9 @@ nudging telemetry to the `coastal-sim` Julia physics engine.
   endpoints. Prefer `.csvp` endpoints for tabular time-series to avoid NetCDF overhead.
 - **C-grid stagger**: NYOFS (POM) uses an Arakawa C-grid. Interpolation to rho-points
   must be done in the fetcher before returning data to the dispatcher.
-- **Tidal Harmonics**: HYCOM provides subtidal OBCs. The service provides raw GOT4.10c (default) or EOT20 harmonic constituents (amplitudes, phases) via `fetchers/tides_tmd.py`.
+- **Tidal Harmonics**: HYCOM provides subtidal OBCs. The service provides raw
+  GOT4.10c (default) or EOT20 harmonic constituents (amplitudes, phases) via
+  `fetchers/tides_tmd.py`.
 - **Precision**: Output arrays should default to `float32` (`<f4`) and use Little-Endian
   endianness for compatibility with `Zarr.jl` and `Oceananigans.jl`.
 
