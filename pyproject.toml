@@ -32,6 +32,10 @@ dependencies = [
 ]
 
 [tool.pytest.ini_options]
+# The project declares no [build-system], so `uv sync` never installs
+# ecodata_cache (src/) or ecodata_serve (service/) into the venv. Tests import
+# both directly, so put each source root on the path for the test session.
+pythonpath = ["src", "service"]
 markers = [
     "integration: marks tests as integration tests",
 ]
@@ -39,6 +43,7 @@ markers = [
 [dependency-groups]
 dev = [
     "httpx>=0.28.1",
+    "mypy>=1.19",
     "pre-commit>=4.5.1",
     "pytest>=9.0.2",
     "pytest-asyncio>=1.3.0",
