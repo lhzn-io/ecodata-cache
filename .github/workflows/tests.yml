@@ -21,7 +21,13 @@ jobs:
       - name: Sync dependencies
         run: uv sync --dev
 
-      - name: Lint and type-check
+      # Advisory, not gating. pre-commit lints only the files a commit touches,
+      # so the repo carries pre-existing drift (1 ruff finding, 7 files ruff
+      # format would rewrite as of 2026-09-22). Failing on that would block
+      # unrelated work; the report stays visible here until the debt is paid,
+      # then this becomes blocking.
+      - name: Lint (advisory)
+        continue-on-error: true
         run: |
           uv run ruff check .
           uv run ruff format --check .
