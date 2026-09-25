@@ -65,20 +65,26 @@ uv run python service/run_server.py --host 0.0.0.0 --port 9598 --workers 4
 
 ## Docker Environment
 
-The `Dockerfile` defaults to `ubuntu:24.04` (x86_64).
-Override `BASE_IMAGE` for other hardware (like edge compute):
+The `Dockerfile` defaults to `ubuntu:24.04`, which is multi-arch. This service is
+CPU-only, so the default works unchanged on x86_64 and on arm64 edge hardware;
+`BASE_IMAGE` exists for cases that need a different base.
 
 ```bash
-# x86_64 (default)
+# x86_64 and arm64 alike (default)
 docker build -t ecodata-cache .
-
-# NVIDIA Jetson AGX Orin (JetPack 6.x)
-docker build \
-  --build-arg BASE_IMAGE=nvcr.io/nvidia/l4t-base:r36.2.0 \
-  -t ecodata-cache .
 
 docker run --rm -p 9598:9598 ecodata-cache
 ```
+
+On NVIDIA Jetson under JetPack 7 (L4T R39, Ubuntu 24.04), keep the default base.
+An earlier revision of this file recommended
+`--build-arg BASE_IMAGE=nvcr.io/nvidia/l4t-base:r36.2.0`; that was wrong on two
+counts. The `l4t-*` image family was never published beyond `r36.4.0`
+(JetPack 6.1), so there is no R39 equivalent to move to, and this service needs
+no CUDA in the image regardless. Where a CUDA base genuinely is required, the
+JetPack 7 path is the unified `nvcr.io/nvidia/cuda:<ver>-*-ubuntu24.04` images,
+which carry real arm64 manifests, combined with CDI device injection
+(`--device nvidia.com/gpu=all`). Note that `--gpus all` is rejected on Tegra.
 
 ## Licensing
 
