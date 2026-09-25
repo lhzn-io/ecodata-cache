@@ -243,12 +243,12 @@ def test_fetch_zeta_tidal_is_nonzero(tmp_path):
             cache_bust=True,
         )
 
-    assert not np.allclose(
-        ds["zeta_tidal"].values, 0.0
-    ), "zeta_tidal should be non-zero for non-trivial harmonic predictions"
-    assert np.allclose(
-        ds["u_tidal"].values, 0.0
-    ), "u_tidal must be zero: GOT/EOT models publish elevation only"
+    assert not np.allclose(ds["zeta_tidal"].values, 0.0), (
+        "zeta_tidal should be non-zero for non-trivial harmonic predictions"
+    )
+    assert np.allclose(ds["u_tidal"].values, 0.0), (
+        "u_tidal must be zero: GOT/EOT models publish elevation only"
+    )
 
 
 def test_fetch_cache_hit(tmp_path):
@@ -289,8 +289,6 @@ def test_fetch_cache_hit(tmp_path):
     ):
         # First call — populates cache
         fetch_tidal_boundary_conditions(**common_kwargs, cache_bust=True)
-
-    predict_call_count_first = mock_tide_da  # reference to check later
 
     # Second call — should hit cache; pyTMD.predict must NOT be invoked
     with patch(_PATCH_PREDICT_TS) as mock_predict_second:
@@ -434,9 +432,9 @@ def test_fetch_time_coordinate_is_datetime64(tmp_path):
             cache_bust=True,
         )
 
-    assert (
-        ds["time"].dtype.kind == "M"
-    ), f"Time coordinate must be datetime64 (kind='M'), got {ds['time'].dtype}"
+    assert ds["time"].dtype.kind == "M", (
+        f"Time coordinate must be datetime64 (kind='M'), got {ds['time'].dtype}"
+    )
     # Must be resampleable without error
     resampled = ds.resample(time="1h").interpolate("linear")
     assert len(resampled.time) == DURATION_HOURS + 1

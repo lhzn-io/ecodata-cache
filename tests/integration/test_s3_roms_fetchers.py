@@ -24,9 +24,9 @@ def test_dbofs_s3_fetch_small_slice():
 
     ds = fetch_dbofs_boundary_conditions(target_date, duration_hours, bbox)
 
-    assert (
-        ds is not None
-    ), "DBOFS fetcher returned None, implying no valid points or a fetch error."
+    assert ds is not None, (
+        "DBOFS fetcher returned None, implying no valid points or a fetch error."
+    )
     # The sliced dataset should have the expected variables
     assert "u" in ds.data_vars
     assert "v" in ds.data_vars
@@ -52,9 +52,9 @@ def test_dbofs_s3_fetch_viewer_bbox():
 
     ds = fetch_dbofs_boundary_conditions(target_date, duration_hours, bbox)
 
-    assert (
-        ds is None
-    ), "DBOFS fetcher should return None because the offshore NJ bbox is outside the valid dry mask."
+    assert ds is None, (
+        "DBOFS fetcher should return None because the offshore NJ bbox is outside the valid dry mask."
+    )
 
 
 @pytest.mark.integration
@@ -76,9 +76,9 @@ def test_nyofs_s3_fetch_small_slice():
 
     ds = fetch_nyofs_boundary_conditions(target_date, duration_hours, bbox)
 
-    assert (
-        ds is not None
-    ), "NYOFS fetcher returned None, implying no valid points or a fetch error."
+    assert ds is not None, (
+        "NYOFS fetcher returned None, implying no valid points or a fetch error."
+    )
     assert "u" in ds.data_vars
     assert "v" in ds.data_vars
 

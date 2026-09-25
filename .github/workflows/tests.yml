@@ -21,16 +21,12 @@ jobs:
       - name: Sync dependencies
         run: uv sync --dev
 
-      # Advisory, not gating. pre-commit lints only the files a commit touches,
-      # so the repo carries pre-existing drift (1 ruff finding, 7 files ruff
-      # format would rewrite as of 2026-09-22). Failing on that would block
-      # unrelated work; the report stays visible here until the debt is paid,
-      # then this becomes blocking.
-      - name: Lint (advisory)
-        continue-on-error: true
-        run: |
-          uv run ruff check .
-          uv run ruff format --check .
+      # Gating. Runs the pinned hooks from .pre-commit-config.yaml rather than
+      # whatever ruff the venv resolves, so CI and a local commit apply the same
+      # version and the same rule selection. Grading against ambient-latest is
+      # what made the first run of this workflow fail on untouched code.
+      - name: Lint
+        run: uv run pre-commit run --all-files --show-diff-on-failure
 
       # Integration tests are excluded: they call live NOAA, ECMWF CDS and HYCOM
       # endpoints, take roughly 10 minutes, and some need CDS credentials.

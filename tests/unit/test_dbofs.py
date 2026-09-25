@@ -419,9 +419,9 @@ class TestDispatcherRegistration:
         ranked = _rank_ic_candidates(bbox)
 
         assert len(ranked) > 0
-        assert (
-            ranked[0][2]["id"] == "dbofs"
-        ), f"Expected DBOFS as top IC donor, got {ranked[0][2]['id']}"
+        assert ranked[0][2]["id"] == "dbofs", (
+            f"Expected DBOFS as top IC donor, got {ranked[0][2]['id']}"
+        )
 
     def test_dbofs_ranks_above_necofs_for_obc_delaware_bay(self):
         """DBOFS must outrank NECOFS for OBC on the delaware bay bbox."""
@@ -432,9 +432,9 @@ class TestDispatcherRegistration:
 
         assert len(ranked) > 0
         ids = [r[2]["id"] for r in ranked]
-        assert ids.index("dbofs") < ids.index(
-            "necofs"
-        ), f"DBOFS should rank before NECOFS in OBC. Order: {ids}"
+        assert ids.index("dbofs") < ids.index("necofs"), (
+            f"DBOFS should rank before NECOFS in OBC. Order: {ids}"
+        )
 
     def test_nyofs_not_in_ic_fetchers(self):
         """NYOFS must remain excluded from IC fetchers."""

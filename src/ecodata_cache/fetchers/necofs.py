@@ -8,6 +8,22 @@ from typing import Optional
 from scipy.spatial import Delaunay
 from scipy.interpolate import LinearNDInterpolator
 
+
+def _require_all(results: list[Optional[np.ndarray]], label: str) -> list[np.ndarray]:
+    """Narrow a pre-allocated result list once every slot has been filled.
+
+    The per-timestep lists start as `[None] * nt` and are filled by index from the
+    thread pool. An exception inside a worker surfaces through future.result() and
+    aborts the whole chunk via the caller's handler, so reaching this point means
+    no slot is still None. Checking it here turns a broken invariant into a named
+    diagnostic instead of an opaque dtype error from np.stack further downstream.
+    """
+    missing = [i for i, r in enumerate(results) if r is None]
+    if missing:
+        raise RuntimeError(f"NECOFS {label}: timesteps {missing} were never populated")
+    return [r for r in results if r is not None]
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -285,11 +301,11 @@ def fetch_necofs_boundary_conditions(
     s_rho_dim = 45
 
     collected_times = []
-    collected_u = []
-    collected_v = []
-    collected_temp = []
-    collected_salt = []
-    collected_zeta = []
+    collected_u: list[np.ndarray] = []
+    collected_v: list[np.ndarray] = []
+    collected_temp: list[np.ndarray] = []
+    collected_salt: list[np.ndarray] = []
+    collected_zeta: list[np.ndarray] = []
 
     current_dt = target_dt
     hours_fetched = 0
@@ -402,11 +418,11 @@ def fetch_necofs_boundary_conditions(
                 return t_idx, u_out_t, v_out_t, temp_out_t, salt_out_t, zeta_k
 
             # Pre-allocate for ordered insertion
-            u_results = [None] * nt
-            v_results = [None] * nt
-            temp_results = [None] * nt
-            salt_results = [None] * nt
-            zeta_results = [None] * nt
+            u_results: list[Optional[np.ndarray]] = [None] * nt
+            v_results: list[Optional[np.ndarray]] = [None] * nt
+            temp_results: list[Optional[np.ndarray]] = [None] * nt
+            salt_results: list[Optional[np.ndarray]] = [None] * nt
+            zeta_results: list[Optional[np.ndarray]] = [None] * nt
 
             max_workers = int(os.environ.get("ECODATA_CACHE_MAX_WORKERS", 4))
             with concurrent.futures.ThreadPoolExecutor(
@@ -426,11 +442,11 @@ def fetch_necofs_boundary_conditions(
                     salt_results[t_idx] = salt_out_t
                     zeta_results[t_idx] = zeta_k
 
-            collected_zeta.extend(zeta_results)
-            collected_u.extend(u_results)
-            collected_v.extend(v_results)
-            collected_temp.extend(temp_results)
-            collected_salt.extend(salt_results)
+            collected_zeta.extend(_require_all(zeta_results, "zeta"))
+            collected_u.extend(_require_all(u_results, "u"))
+            collected_v.extend(_require_all(v_results, "v"))
+            collected_temp.extend(_require_all(temp_results, "temp"))
+            collected_salt.extend(_require_all(salt_results, "salt"))
 
             hours_fetched += int(take_steps)
             collected_times.extend(ds_t.time.values)

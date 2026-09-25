@@ -12,7 +12,7 @@
         <!-- Wind Quivers (Teal/Cyan) -->
         <path d="M-25,-2.5 L-5,-5" stroke="#3fb950" stroke-width="3" fill="none" marker-end="url(#arrowGreen)"/>
         <path d="M0,10 L20,7.5" stroke="#3fb950" stroke-width="3" fill="none" marker-end="url(#arrowGreen)"/>
-        
+
         <!-- Connections representing caching nodes -->
         <line x1="0" y1="10" x2="0" y2="50" stroke="#30363d" stroke-width="1" stroke-dasharray="2,2" />
         <line x1="-50" y1="-15" x2="-50" y2="25" stroke="#30363d" stroke-width="1" stroke-dasharray="2,2" />

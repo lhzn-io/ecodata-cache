@@ -272,9 +272,9 @@ def fetch_tidal_boundary_conditions(
         # Scalar point - unlikely but guard anyway
         zeta_vals = zeta_vals[:, np.newaxis]
     nt, n_pts_pred = zeta_vals.shape
-    assert (
-        n_pts_pred == n_pts
-    ), f"Prediction point count mismatch: {n_pts_pred} != {n_pts}"
+    assert n_pts_pred == n_pts, (
+        f"Prediction point count mismatch: {n_pts_pred} != {n_pts}"
+    )
     zeta_grid = zeta_vals.reshape(nt, len(lats), len(lons))
 
     # Tidal currents: GOT/EOT models only publish elevation constituents.

@@ -190,9 +190,9 @@ def test_nyofs_expanded_bbox_covers_offshore_nj():
     from ecodata_cache.fetchers import nyofs
 
     meta = nyofs.get_metadata()
-    assert (
-        meta["domain_bbox"][1] >= 40.0
-    ), "NYOFS domain_bbox min_lat should be ~40.2 for realistic coverage"
+    assert meta["domain_bbox"][1] >= 40.0, (
+        "NYOFS domain_bbox min_lat should be ~40.2 for realistic coverage"
+    )
 
 
 def test_nyofs_rejects_offshore_nj_bbox():
@@ -212,9 +212,9 @@ def test_dbofs_rejects_mid_atlantic_bight_ic_due_to_hydro_mask():
     ranked = _rank_ic_candidates(bbox)
 
     assert len(ranked) > 0
-    assert (
-        ranked[0][2]["id"] != "dbofs"
-    ), "Expected DBOFS to be rejected for this IC donor due to offshore masking"
+    assert ranked[0][2]["id"] != "dbofs", (
+        "Expected DBOFS to be rejected for this IC donor due to offshore masking"
+    )
 
 
 def test_dispatch_station_profiles_request_wlis(mocker):

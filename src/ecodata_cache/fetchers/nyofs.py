@@ -229,7 +229,7 @@ def _open_nyofs_dataset(
                 import concurrent.futures
                 import os
 
-                datasets = [None] * len(files)
+                datasets: list[Optional[xr.Dataset]] = [None] * len(files)
                 fail_counts = [0]
 
                 def _fetch_file(args):
@@ -258,14 +258,14 @@ def _open_nyofs_dataset(
                         if ds_file is not None:
                             datasets[i - 1] = ds_file
 
-                datasets = [ds for ds in datasets if ds is not None]
+                opened = [ds for ds in datasets if ds is not None]
 
-                if not datasets:
+                if not opened:
                     logger.error(f"No NYOFS {mode_name} files could be opened.")
                     return None
 
                 # Concatenate along time dimension
-                return xr.concat(datasets, dim="time", join="override")
+                return xr.concat(opened, dim="time", join="override")
 
         else:
             logger.error(f"Unknown access_mode: {access_mode}")

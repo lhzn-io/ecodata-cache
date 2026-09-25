@@ -114,9 +114,9 @@ def test_temporal_resample_produces_hourly():
     resampled = ds.resample(time="1h").interpolate("linear")
 
     diffs = np.diff(resampled.time.values).astype("timedelta64[h]").astype(int)
-    assert (
-        diffs == 1
-    ).all(), "All time steps should be exactly 1 hour after resampling"
+    assert (diffs == 1).all(), (
+        "All time steps should be exactly 1 hour after resampling"
+    )
 
 
 def test_temporal_resample_preserves_dtype():
@@ -124,9 +124,9 @@ def test_temporal_resample_preserves_dtype():
     resampled = ds.resample(time="1h").interpolate("linear")
 
     # pandas/xarray 2.x uses datetime64[us]; any datetime64 resolution is acceptable
-    assert (
-        resampled.time.dtype.kind == "M"
-    ), f"Time coordinate must be datetime64 (kind='M'), got {resampled.time.dtype}"
+    assert resampled.time.dtype.kind == "M", (
+        f"Time coordinate must be datetime64 (kind='M'), got {resampled.time.dtype}"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -182,9 +182,9 @@ def test_tpxo_merge_adds_to_zeta():
 
     zeta_before = ds["zeta"].values.copy()
     ds["zeta"] = ds["zeta"] + tide_ds_interp["zeta_tide"]
-    assert (
-        ds["zeta"].shape == zeta_before.shape
-    ), "Shape must not change after tidal addition"
+    assert ds["zeta"].shape == zeta_before.shape, (
+        "Shape must not change after tidal addition"
+    )
     assert not np.allclose(ds["zeta"].values, zeta_before, equal_nan=True)
 
 
